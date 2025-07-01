@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Custom Digital Coupon Book</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            flex-direction: column; /* Stack header and coupons vertically */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .website-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            max-width: 800px;
+            width: 100%;
+        }
+        .website-header h1 {
+            font-size: 3rem; /* Larger title */
+            font-weight: 700;
+            color: #d81b60; /* Deep pink color */
+            margin-bottom: 10px;
+        }
+        .website-header p {
+            font-size: 1.1rem;
+            color: #880e4f;
+            line-height: 1.6;
+        }
+        .coupon-container {
+            display: flex;
+            flex-wrap: wrap; /* Allows coupons to wrap on smaller screens */
+            gap: 24px; /* Space between coupons */
+            justify-content: center;
+            max-width: 1200px; /* Max width for the container */
+            width: 100%;
+        }
+        .coupon-card {
+            background: linear-gradient(135deg, #fce3e7 0%, #ffe0f0 100%); /* Pastel pink gradient */
+            border: 2px dashed #f8bbd0; /* Dashed border for coupon look */
+            border-radius: 20px; /* Rounded corners */
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            text-align: center;
+            flex: 1 1 calc(33% - 24px); /* Flex basis for 3 coupons per row, adjusting for gap */
+            min-width: 280px; /* Minimum width for a single coupon */
+            max-width: 380px; /* Max width for individual coupon */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: opacity 0.5s ease-in-out, box-shadow 0.5s ease-in-out, background-color 0.5s ease-in-out, border-color 0.5s ease-in-out; /* Adjusted transitions */
+        }
+        .coupon-card:hover:not(.coupon-redeemed) { /* Only hover if not redeemed */
+            transform: translateY(-5px); /* Slight lift on hover */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        .coupon-title {
+            font-size: 1.8rem; /* Larger font for title */
+            font-weight: 700;
+            color: #d81b60; /* Deep pink color */
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        .coupon-description {
+            font-size: 1.1rem;
+            color: #880e4f; /* Darker pink for description */
+            font-style: italic;
+            margin-top: 15px;
+            margin-bottom: 20px; /* Space before button */
+        }
+        .coupon-icon {
+            font-size: 3rem; /* Large icon size */
+            margin-bottom: 10px;
+            color: #ec407a; /* Medium pink for icons */
+        }
+        .redeem-button {
+            background-color: #ff80ab; /* Bright pink button */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            border: none;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(255, 128, 171, 0.4);
+        }
+        .redeem-button:hover:not(:disabled) {
+            background-color: #e06090; /* Darker pink on hover */
+            transform: translateY(-2px);
+        }
+        .redeem-button:disabled {
+            background-color: #cccccc; /* Gray when disabled */
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Styles for redeemed coupons */
+        .coupon-redeemed {
+            opacity: 0.6; /* Slightly fade out */
+            box-shadow: none; /* Remove shadow */
+            border: 4px dashed #b0bec5; /* Thicker, greyish dashed border for "cut" effect */
+            background: linear-gradient(135deg, #e0e0e0 0%, #f0f0f0 100%); /* Greyish gradient */
+            pointer-events: none; /* Prevent further interaction */
+        }
+        .coupon-redeemed .coupon-title,
+        .coupon-redeemed .coupon-description,
+        .coupon-redeemed .coupon-icon {
+            color: #757575; /* Grey out text and icons */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .coupon-card {
+                flex: 1 1 calc(50% - 24px); /* 2 coupons per row on medium screens */
+            }
+            .website-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .coupon-card {
+                flex: 1 1 100%; /* 1 coupon per row on small screens */
+                max-width: 400px; /* Limit width on very small screens */
+            }
+            .coupon-title {
+                font-size: 1.5rem;
+            }
+            .coupon-description {
+                font-size: 1rem;
+            }
+            .coupon-icon {
+                font-size: 2.5rem;
+            }
+            .website-header h1 {
+                font-size: 2rem;
+            }
+            .website-header p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="website-header">
+        <h1>Your Special Coupon Book!</h1>
+        <p>Click to redeem your exclusive treats!</p>
+    </div>
+
+    <div class="coupon-container">
+        <!-- Coupon 1: Back Hug -->
+        <div class="coupon-card">
+            <div class="coupon-icon">✨</div>
+            <div class="coupon-title">1 Free Back Hug</div>
+            <div class="coupon-description">Redeemable anytime I’m not being a brat</div>
+            <button class="redeem-button" onclick="redeemCoupon(this)">Redeem</button>
+        </div>
+
+        <!-- Coupon 2: Listening Session -->
+        <div class="coupon-card">
+            <div class="coupon-icon">🧠</div>
+            <div class="coupon-title">1 Listening Session</div>
+            <div class="coupon-description">For your full Ted Talk</div>
+            <button class="redeem-button" onclick="redeemCoupon(this)">Redeem</button>
+        </div>
+
+        <!-- Coupon 3: Butt Touches -->
+        <div class="coupon-card">
+            <div class="coupon-icon">🍑</div>
+            <div class="coupon-title">3 Butt Touches</div>
+            <div class="coupon-description">No take backs</div>
+            <button class="redeem-button" onclick="redeemCoupon(this)">Redeem</button>
+        </div>
+
+        <!-- Coupon 4: Fight You Win -->
+        <div class="coupon-card">
+            <div class="coupon-icon">😤</div>
+            <div class="coupon-title">1 Fight You Win</div>
+            <div class="coupon-description">Even If You’re Wrong™</div>
+            <button class="redeem-button" onclick="redeemCoupon(this)">Redeem</button>
+        </div>
+
+        <!-- Coupon 5: Makeout Marathon -->
+        <div class="coupon-card">
+            <div class="coupon-icon">💋</div>
+            <div class="coupon-title">1 Makeout Marathon</div>
+            <div class="coupon-description">Battery not included</div>
+            <button class="redeem-button" onclick="redeemCoupon(this)">Redeem</button>
+        </div>
+    </div>
+
+    <script>
+        function redeemCoupon(button) {
+            button.textContent = "Redeemed!";
+            button.disabled = true
+            const couponCard = button.closest('.coupon-card');
+            if (couponCard) {
+                couponCard.classList.add('coupon-redeemed');
+            }
+            console.log("Coupon redeemed!");
+        }
+    </script>
+</body>
+</html>
